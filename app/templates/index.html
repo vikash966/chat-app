@@ -1,0 +1,81 @@
+
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Flask-SocketIO-Chat</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #222;
+            color: #fff;
+        }
+
+        h1 {
+            text-align: center;
+            margin-top: 50px;
+            color: #fff;
+        }
+
+        .container {
+            max-width: 500px;
+            margin: 0 auto;
+            padding: 20px;
+            background-color: #333;
+            border-radius: 5px;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
+        }
+
+        .form-group {
+            margin-bottom: 20px;
+        }
+
+        label {
+            display: block;
+            font-weight: bold;
+            margin-bottom: 5px;
+        }
+
+        input[type="text"] {
+            width: 100%;
+            padding: 10px;
+            border: 1px solid #777;
+            border-radius: 5px;
+            background-color: #444;
+            color: #fff;
+        }
+
+        .btn {
+            display: inline-block;
+            padding: 10px 20px;
+            background-color: #007bff;
+            color: #fff;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+
+        .btn:hover {
+            background-color: #0056b3;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Flask-SocketIO-Chat</h1>
+        <form method="POST">
+            {{ form.hidden_tag() }}
+            <div class="form-group">
+                <label for="name">Name:</label>
+                {{ form.name() }} {% for error in form.name.errors %}{{ error }}{% endfor %}
+            </div>
+            <div class="form-group">
+                <label for="room">Room:</label>
+                {{ form.room() }} {% for error in form.room.errors %}{{ error }}{% endfor %}
+            </div>
+            <div class="form-group">
+                <input type="submit" class="btn" value="Join Room">
+            </div>
+        </form>
+    </div>
+</body>
+</html>

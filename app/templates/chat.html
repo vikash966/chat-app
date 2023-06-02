@@ -1,0 +1,115 @@
+
+
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Flask-SocketIO-Chat: {{ room }}</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #222;
+            color: #fff;
+        }
+
+        h1 {
+            text-align: center;
+            margin-top: 50px;
+            color: #fff;
+        }
+
+        .container {
+            max-width: 500px;
+            margin: 0 auto;
+            padding: 20px;
+            background-color: #333;
+            border-radius: 5px;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
+        }
+
+        #chat {
+            width: 100%;
+            height: 400px;
+            background-color: #333;
+            color: #fff;
+            border: none;
+            border-radius: 5px;
+            padding: 10px;
+            resize: none;
+            overflow-y: scroll;
+            margin-bottom: 10px;
+        }
+
+        #text {
+            width: 100%;
+            padding: 10px;
+            border: 1px solid #777;
+            border-radius: 5px;
+            background-color: #444;
+            color: #fff;
+            margin-bottom: 10px;
+        }
+
+        .leave-btn {
+            display: inline-block;
+            padding: 10px 20px;
+            background-color: #ff4444;
+            color: #fff;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            text-decoration: none;
+        }
+
+        .leave-btn:hover {
+            background-color: #cc0000;
+        }
+    </style>
+    <script type="text/javascript" src="//code.jquery.com/jquery-1.4.2.min.js"></script>
+    <script type="text/javascript" src="//cdn.socket.io/4.4.1/socket.io.min.js"></script>
+    <script type="text/javascript" charset="utf-8">
+        var socket;
+        $(document).ready(function(){
+            socket = io.connect('http://' + document.domain + ':' + location.port + '/chat');
+            socket.on('connect', function() {
+                socket.emit('joined', {});
+            });
+            socket.on('status', function(data) {
+                $('#chat').val($('#chat').val() + '<' + data.msg + '>\n');
+                $('#chat').scrollTop($('#chat')[0].scrollHeight);
+            });
+            socket.on('message', function(data) {
+                $('#chat').val($('#chat').val() + data.msg + '\n');
+                $('#chat').scrollTop($('#chat')[0].scrollHeight);
+            });
+            $('#text').keypress(function(e) {
+                var code = e.keyCode || e.which;
+                if (code == 13) {
+                    text = $('#text').val();
+                    $('#text').val('');
+                    socket.emit('text', {msg: text});
+                }
+            });
+        });
+        function leave_room() {
+            socket.emit('left', {}, function() {
+                socket.disconnect();
+
+                // go back to the login page
+                window.location.href = "{{ url_for('main.index') }}";
+            });
+        }
+    </script>
+</head>
+<body>
+    <h1>Flask-SocketIO-Chat: {{ room }}</h1>
+    <div class="container">
+        <textarea id="chat" disabled></textarea>
+        <input id="text" placeholder="Enter your message here">
+        <a href="#" onclick="leave_room();" class="leave-btn">Leave this room</a>
+    </div>
+    <script>
+        // Disable the textarea
+        document.getElementById("chat").setAttribute("disabled", true);
+    </script>
+</body>
+</html>
